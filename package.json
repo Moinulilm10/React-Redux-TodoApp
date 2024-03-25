@@ -1,7 +1,7 @@
 {
   "name": "React-Redux-TodoApp",
   "private": true,
-  "homepage": "https://sahasourav17.github.io/React-Redux-TodoApp/",
+  "homepage": "https://Moinulilm10.github.io/React-Redux-TodoApp/",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -32,3 +32,4 @@
     "vite": "^5.1.4"
   }
 }
+
