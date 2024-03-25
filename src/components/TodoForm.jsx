@@ -1,12 +1,13 @@
-import React, { useState } from "react";
 import {
   Button,
-  TextField,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  TextField,
 } from "@material-ui/core";
+import Proptypes from "prop-types";
+import { useState } from "react";
 
 const TodoForm = ({ onSaveTodo }) => {
   const [open, setOpen] = useState(false);
@@ -15,6 +16,10 @@ const TodoForm = ({ onSaveTodo }) => {
     description: "",
     id: Date.now(),
   });
+  const [errors, setErrors] = useState({
+    title: "",
+    description: "",
+  });
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -22,13 +27,37 @@ const TodoForm = ({ onSaveTodo }) => {
 
   const handleClose = () => {
     setOpen(false);
-    setTodo({ title: "", description: "", id: Date.now() });
+    setTodo({
+      title: "",
+      description: "",
+      id: Date.now(),
+    });
+    setErrors({
+      title: "",
+      description: "",
+    });
   };
 
   const handleSave = () => {
-    onSaveTodo(todo);
-    setTodo({ title: "", description: "", id: Date.now() });
-    handleClose();
+    const errors = {};
+    if (!todo.title.trim()) {
+      errors.title = "Title is required";
+    }
+    if (!todo.description.trim()) {
+      errors.description = "Description is required";
+    }
+
+    if (Object.keys(errors).length === 0) {
+      onSaveTodo(todo);
+      setTodo({
+        title: "",
+        description: "",
+        id: Date.now(),
+      });
+      handleClose();
+    } else {
+      setErrors(errors);
+    }
   };
 
   return (
@@ -49,6 +78,7 @@ const TodoForm = ({ onSaveTodo }) => {
         <DialogTitle id="form-dialog-title">New Todo</DialogTitle>
         <DialogContent>
           <TextField
+            required
             autoFocus
             margin="dense"
             id="title"
@@ -56,17 +86,22 @@ const TodoForm = ({ onSaveTodo }) => {
             type="text"
             fullWidth
             value={todo.title}
+            error={!!errors.title}
+            helperText={errors.title}
             onChange={(e) => setTodo({ ...todo, title: e.target.value })}
           />
           <TextField
+            required
             margin="dense"
             id="description"
             label="Description"
             type="text"
             fullWidth
             multiline
-            rows={4}
+            minRows={4}
             value={todo.description}
+            error={!!errors.description}
+            helperText={errors.description}
             onChange={(e) => setTodo({ ...todo, description: e.target.value })}
           />
         </DialogContent>
@@ -81,6 +116,11 @@ const TodoForm = ({ onSaveTodo }) => {
       </Dialog>
     </div>
   );
+};
+
+TodoForm.propTypes = {
+  onSaveTodo: Proptypes.func,
+  todoEdit: Proptypes.object,
 };
 
 export default TodoForm;
